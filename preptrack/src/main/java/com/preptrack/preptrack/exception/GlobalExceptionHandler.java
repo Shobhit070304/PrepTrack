@@ -1,6 +1,7 @@
 package com.preptrack.preptrack.exception;
 
 import com.preptrack.preptrack.dto.ErrorResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -47,6 +48,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         return build(HttpStatus.BAD_REQUEST, "Invalid value for '" + ex.getName() + "'", null);
+    }
+
+    // 409: database rejected the data (unique / foreign key rule)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex) {
+        return build(HttpStatus.CONFLICT, "This change conflicts with existing data", null);
     }
 
     // 500: anything unexpected

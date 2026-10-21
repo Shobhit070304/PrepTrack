@@ -1,6 +1,8 @@
 package com.preptrack.preptrack.controller;
 
 import com.preptrack.preptrack.dto.ExamRequest;
+import com.preptrack.preptrack.dto.ExamResponse;
+import com.preptrack.preptrack.dto.ExamSyllabusResponse;
 import com.preptrack.preptrack.model.Exam;
 import com.preptrack.preptrack.service.ExamService;
 import jakarta.validation.Valid;
@@ -21,22 +23,28 @@ public class ExamController {
     }
 
     @GetMapping
-    public List<Exam> getAll() {
+    public List<ExamResponse> getAll() {
         return examService.getAll();
     }
 
     @GetMapping("/{id}")
-    public Exam getById(@PathVariable Long id) {
+    public ExamResponse getById(@PathVariable Long id) {
         return examService.getById(id);
     }
 
+    // NEW: the full syllabus tree for one exam
+    @GetMapping("/{id}/syllabus")
+    public ExamSyllabusResponse getSyllabus(@PathVariable Long id) {
+        return examService.getSyllabus(id);
+    }
+
     @PostMapping
-    public ResponseEntity<Exam> create(@Valid @RequestBody ExamRequest request) {
+    public ResponseEntity<ExamResponse> create(@Valid @RequestBody ExamRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(examService.create(request));
     }
 
     @PutMapping("/{id}")
-    public Exam update(@PathVariable Long id, @Valid @RequestBody ExamRequest request) {
+    public ExamResponse update(@PathVariable Long id, @Valid @RequestBody ExamRequest request) {
         return examService.update(id, request);
     }
 

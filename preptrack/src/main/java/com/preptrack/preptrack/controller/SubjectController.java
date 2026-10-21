@@ -1,6 +1,7 @@
 package com.preptrack.preptrack.controller;
 
 import com.preptrack.preptrack.dto.SubjectRequest;
+import com.preptrack.preptrack.dto.SubjectResponse;
 import com.preptrack.preptrack.model.Subject;
 import com.preptrack.preptrack.service.SubjectService;
 import jakarta.validation.Valid;
@@ -20,24 +21,23 @@ public class SubjectController {
         this.subjectService = subjectService;
     }
 
-    // GET /api/subjects  or  GET /api/subjects?examId=1
     @GetMapping
-    public List<Subject> getAll(@RequestParam(required = false) Long examId) {
+    public List<SubjectResponse> getAll(@RequestParam(required = false) Long examId) {
         return subjectService.getAll(examId);
     }
 
     @GetMapping("/{id}")
-    public Subject getById(@PathVariable Long id) {
+    public SubjectResponse getById(@PathVariable Long id) {
         return subjectService.getById(id);
     }
 
     @PostMapping
-    public ResponseEntity<Subject> create(@Valid @RequestBody SubjectRequest request) {
+    public ResponseEntity<SubjectResponse> create(@Valid @RequestBody SubjectRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(subjectService.create(request));
     }
 
     @PutMapping("/{id}")
-    public Subject update(@PathVariable Long id, @Valid @RequestBody SubjectRequest request) {
+    public SubjectResponse update(@PathVariable Long id, @Valid @RequestBody SubjectRequest request) {
         return subjectService.update(id, request);
     }
 

@@ -1,6 +1,7 @@
 package com.preptrack.preptrack.controller;
 
 import com.preptrack.preptrack.dto.TopicRequest;
+import com.preptrack.preptrack.dto.TopicResponse;
 import com.preptrack.preptrack.model.Topic;
 import com.preptrack.preptrack.service.TopicService;
 import jakarta.validation.Valid;
@@ -20,24 +21,23 @@ public class TopicController {
         this.topicService = topicService;
     }
 
-    // GET /api/topics  or  GET /api/topics?subjectId=1
     @GetMapping
-    public List<Topic> getAll(@RequestParam(required = false) Long subjectId) {
+    public List<TopicResponse> getAll(@RequestParam(required = false) Long subjectId) {
         return topicService.getAll(subjectId);
     }
 
     @GetMapping("/{id}")
-    public Topic getById(@PathVariable Long id) {
+    public TopicResponse getById(@PathVariable Long id) {
         return topicService.getById(id);
     }
 
     @PostMapping
-    public ResponseEntity<Topic> create(@Valid @RequestBody TopicRequest request) {
+    public ResponseEntity<TopicResponse> create(@Valid @RequestBody TopicRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(topicService.create(request));
     }
 
     @PutMapping("/{id}")
-    public Topic update(@PathVariable Long id, @Valid @RequestBody TopicRequest request) {
+    public TopicResponse update(@PathVariable Long id, @Valid @RequestBody TopicRequest request) {
         return topicService.update(id, request);
     }
 
