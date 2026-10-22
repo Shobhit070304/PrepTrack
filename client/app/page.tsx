@@ -1,59 +1,72 @@
+"use client";
+
 import Link from "next/link";
+import { ArrowDownRight, ArrowRight, BookOpen, Check, CircleCheck, Flame, LockKeyhole, MoveUpRight, Sparkles, Target, TrendingUp } from "lucide-react";
+import { GoogleSignInButton } from "@/components/google-sign-in";
+import { ErrorNotice, LoadingCard, PageHeading, PageShell } from "@/components/page-shell";
+import { useAuth } from "@/app/providers";
+import { useExams } from "@/lib/queries";
 
-function Mark() {
-  return <span className="brand-mark"><span/><span/><span/><span/></span>;
-}
+export default function HomePage() {
+  const { user, ready } = useAuth();
+  const exams = useExams();
+  const previewExams = exams.data?.slice(0, 3) ?? [];
 
-function Arrow() {
-  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>;
-}
-
-function Spark() {
-  return <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m12 3 1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7z"/></svg>;
-}
-
-export default function Home() {
-  return (
-    <main className="landing-page">
-      <header className="landing-header">
-        <Link className="landing-brand" href="/"><Mark/><span>prep<span>track</span></span></Link>
-        <nav className="landing-nav" aria-label="Main navigation"><Link href="/explore">Explore exams</Link><a href="#how-it-works">How it works</a></nav>
-        <div className="landing-actions"><Link className="landing-login" href="/profile">My profile</Link><Link className="landing-nav-cta" href="/dashboard">Open workspace <Arrow/></Link></div>
-      </header>
-
-      <section className="landing-hero">
-        <div className="landing-copy">
-          <div className="landing-eyebrow"><span/><Spark/> A CLEARER WAY TO PREPARE</div>
-          <h1>Make your next<br/><em>big goal</em> feel closer.</h1>
-          <p className="landing-lede">A calm, focused space to map your syllabus, build steady habits, and see just how far you’ve come.</p>
-          <div className="landing-hero-actions"><Link className="landing-primary" href="/explore">Explore exams <Arrow/></Link><Link className="landing-secondary" href="/dashboard">Go to my workspace <span>↗</span></Link></div>
-          <div className="landing-proof"><div className="proof-avatars"><span>A</span><span>M</span><span>R</span></div><p><strong>One topic at a time.</strong><br/>Progress that feels possible.</p><span className="proof-separator"/><span className="proof-note"><i/> Built for focused preparation</span></div>
-        </div>
-        <div className="landing-visual" aria-label="Preview of your study dashboard">
-          <div className="visual-halo"/><div className="visual-orbit orbit-a"/><div className="visual-orbit orbit-b"/>
-          <div className="preview-window">
-            <div className="preview-top"><div className="preview-dots"><i/><i/><i/></div><span>MY STUDY SPACE</span><span className="preview-avatar">A</span></div>
-            <div className="preview-body"><div className="preview-welcome"><span>YOUR LEARNING PATH</span><strong>Steady progress,<br/>stronger confidence.</strong><small>Keep your momentum going.</small></div>
-              <div className="preview-chart"><div className="chart-heading"><span>OVERALL PROGRESS</span><strong>68%</strong></div><div className="chart-ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="48"/><circle className="chart-ring-value" cx="60" cy="60" r="48"/></svg><span>68<small>%</small></span></div><div className="chart-caption"><i/> 18 of 26 topics completed</div></div>
-              <div className="preview-subjects"><div className="preview-subject-heading"><strong>Your subjects</strong><span>VIEW ALL →</span></div><div className="preview-subject"><span className="preview-subject-icon icon-gold">01</span><span><strong>General Studies</strong><small>12 topics · 8 completed</small></span><b>67%</b></div><div className="preview-subject"><span className="preview-subject-icon icon-sage">02</span><span><strong>Quantitative Aptitude</strong><small>8 topics · 6 completed</small></span><b>75%</b></div><div className="preview-subject"><span className="preview-subject-icon icon-blue">03</span><span><strong>English Language</strong><small>6 topics · 4 completed</small></span><b>67%</b></div></div>
-            </div>
+  return <div className="app-backdrop min-h-screen">
+    <PageShell>
+      <section className="relative grid min-h-[540px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#101014] lg:grid-cols-[1fr_.85fr]">
+        <div className="pointer-events-none absolute -left-36 -top-48 h-[35rem] w-[35rem] rounded-full bg-indigo-600/20 blur-[100px]" />
+        <div className="relative z-10 flex flex-col justify-center p-7 sm:p-12 lg:p-16">
+          <p className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-indigo-300/20 bg-indigo-300/[0.07] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[.18em] text-indigo-200"><Sparkles size={13}/> A clearer path to your next milestone</p>
+          <h1 className="max-w-2xl text-[2.65rem] font-semibold leading-[1.08] tracking-[-.045em] text-white sm:text-6xl">Make your next big goal <span className="bg-gradient-to-r from-indigo-200 via-violet-300 to-sky-200 bg-clip-text text-transparent">feel closer.</span></h1>
+          <p className="mt-6 max-w-lg text-base leading-7 text-zinc-400">A calm, focused space to map your syllabus, build steady habits, and see how far you’ve come.</p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Link href="/exams" className="inline-flex items-center gap-2 rounded-xl bg-indigo-300 px-5 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-indigo-200">Explore exams <ArrowRight size={16}/></Link>
+            {user ? <Link href="/profile" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-5 py-3 text-sm font-medium text-zinc-200 transition hover:bg-white/[0.06]">My profile <MoveUpRight size={15}/></Link> : ready ? <div id="sign-in" className="scroll-mt-24"><GoogleSignInButton/></div> : null}
           </div>
-          <div className="floating-note note-top"><span className="note-check">✓</span><span><strong>Nice work!</strong><small>Another topic complete</small></span></div>
-          <div className="floating-note note-bottom"><span className="note-spark"><Spark/></span><span><strong>Consistency wins</strong><small>Keep your streak moving</small></span></div>
-          <div className="visual-star star-a">✳</div><div className="visual-star star-b">✦</div>
+          {!user && ready && <p className="mt-4 flex items-center gap-1.5 text-xs text-zinc-600"><LockKeyhole size={12}/> Secure Google sign-in. No password sharing.</p>}
+          <div className="mt-10 flex items-center gap-3 text-xs text-zinc-500"><div className="flex -space-x-2"><span className="grid h-7 w-7 place-items-center rounded-full border-2 border-[#101014] bg-indigo-300 text-[10px] font-bold text-zinc-950">P</span><span className="grid h-7 w-7 place-items-center rounded-full border-2 border-[#101014] bg-sky-300 text-[10px] font-bold text-zinc-950">T</span><span className="grid h-7 w-7 place-items-center rounded-full border-2 border-[#101014] bg-emerald-300 text-[10px] font-bold text-zinc-950">✓</span></div><span>One topic at a time. Progress that adds up.</span></div>
+        </div>
+        <div className="relative flex items-center justify-center overflow-hidden px-5 pb-10 pt-2 sm:px-10 lg:p-8">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_60%_50%,rgba(99,102,241,.16),transparent_60%)]" />
+          <div className="relative w-full max-w-[470px] rotate-1 rounded-[1.6rem] border border-white/10 bg-zinc-950/85 p-4 shadow-[0_35px_100px_rgba(0,0,0,.55)] backdrop-blur-xl sm:p-5">
+            <div className="flex items-center justify-between border-b border-white/[0.07] pb-4"><div><p className="text-[10px] font-semibold uppercase tracking-[.18em] text-indigo-300">My study space</p><p className="mt-1 text-sm font-medium text-white">Your learning path</p></div><span className="grid h-9 w-9 place-items-center rounded-xl bg-indigo-400/10 text-indigo-200"><TrendingUp size={17}/></span></div>
+            <div className="mt-5 flex items-end justify-between"><div><p className="text-xs text-zinc-500">Overall progress</p><p className="mt-1 text-3xl font-semibold tracking-tight text-white">68<span className="text-lg text-indigo-200">%</span></p></div><span className="mb-1 inline-flex items-center gap-1 rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-medium text-emerald-300"><Flame size={12}/> On a roll</span></div>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.07]"><div className="h-full w-[68%] rounded-full bg-gradient-to-r from-indigo-500 to-violet-300"/></div>
+            <div className="mt-6 space-y-2.5"><div className="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.025] p-3"><span className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-400/10 text-emerald-300"><CircleCheck size={16}/></span><span className="flex-1"><b className="block text-xs font-medium text-zinc-200">Cell Biology</b><small className="text-[10px] text-zinc-600">Biology · completed</small></span><Check size={15} className="text-emerald-300"/></div><div className="flex items-center gap-3 rounded-xl border border-indigo-300/15 bg-indigo-300/[0.045] p-3"><span className="grid h-8 w-8 place-items-center rounded-lg bg-indigo-400/10 text-indigo-200"><Target size={16}/></span><span className="flex-1"><b className="block text-xs font-medium text-zinc-200">Organic Chemistry</b><small className="text-[10px] text-zinc-600">Chemistry · in progress</small></span><ArrowDownRight size={15} className="text-indigo-200"/></div><div className="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.025] p-3"><span className="grid h-8 w-8 place-items-center rounded-lg bg-white/[0.05] text-zinc-500"><BookOpen size={16}/></span><span className="flex-1"><b className="block text-xs font-medium text-zinc-300">Practice & revision</b><small className="text-[10px] text-zinc-600">Your next step is ready</small></span></div></div>
+            <div className="mt-4 flex items-center justify-between rounded-xl bg-gradient-to-r from-indigo-500/15 to-violet-500/10 p-3.5"><span className="text-xs text-zinc-400">Small steps make strong results.</span><Sparkles size={15} className="text-indigo-200"/></div>
+          </div>
+          <div className="absolute bottom-[10%] right-[6%] hidden items-center gap-2 rounded-xl border border-white/10 bg-zinc-900/90 px-3 py-2 text-xs text-zinc-300 shadow-xl backdrop-blur sm:flex"><span className="h-2 w-2 rounded-full bg-emerald-300"/> Focus is looking good</div>
         </div>
       </section>
 
-      <section className="landing-strip"><span>YOUR PREPARATION, MADE CLEAR</span><div><i/>Organize your syllabus</div><div><i/>Track every topic</div><div><i/>Celebrate real progress</div></section>
-
-      <section className="landing-features" id="how-it-works"><div className="feature-intro"><div className="landing-eyebrow"><span/> SIMPLE BY DESIGN</div><h2>Clarity for the<br/>work ahead.</h2><p>Big exams are made up of small steps. PrepTrack helps you see those steps and keep moving.</p><Link href="/explore">Find your exam <Arrow/></Link></div>
-        <article className="feature-card feature-card-syllabus"><span className="feature-number">01 / ORGANIZE</span><div className="feature-art art-stack"><span>Exam</span><span>Subjects <b>03</b></span><span>Topics <b>26</b></span></div><h3>Your syllabus, in view.</h3><p>Bring subjects and topics into one clean learning path you can actually follow.</p></article>
-        <article className="feature-card feature-card-progress"><span className="feature-number">02 / TRACK</span><div className="feature-art art-progress"><div><strong>68%</strong><span>of your path</span></div><i/><i/><i/><i/><i/></div><h3>Progress you can feel.</h3><p>Mark what you’re learning, revising, and completing. Every step counts.</p></article>
-        <article className="feature-card feature-card-focus"><span className="feature-number">03 / KEEP GOING</span><div className="feature-art art-focus"><Spark/><span>Keep showing up.</span><small>One focused session at a time.</small></div><h3>Stay with the journey.</h3><p>Keep your goals close and return to a workspace built for focus.</p></article>
+      <section className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[["01", "Choose your exam"], ["02", "See the full syllabus"], ["03", "Track each topic"], ["04", "Build real momentum"]].map(([number, label]) => <div key={number} className="rounded-2xl border border-white/[0.07] bg-white/[0.025] px-4 py-4 sm:px-5"><span className="text-[10px] font-semibold tracking-[.16em] text-indigo-300">{number}</span><p className="mt-2 text-xs font-medium text-zinc-300 sm:text-sm">{label}</p></div>)}
       </section>
 
-      <section className="landing-cta"><div className="cta-decoration"><span/><span/><span/></div><div className="landing-eyebrow"><span/> YOUR NEXT STEP STARTS HERE</div><h2>Turn your preparation<br/>into visible progress.</h2><p>Explore an exam and make the path ahead feel manageable.</p><Link className="landing-primary cta-button" href="/explore">Explore exams <Arrow/></Link><span className="cta-footnote">No noise. Just your next step.</span></section>
-      <footer className="landing-footer"><Link className="landing-brand" href="/"><Mark/><span>prep<span>track</span></span></Link><span>Thoughtful preparation, one step at a time.</span><div><Link href="/explore">Explore</Link><Link href="/profile">Profile</Link><Link href="/dashboard">Workspace</Link></div><small>© PrepTrack</small></footer>
-    </main>
-  );
+      <section className="mt-24 sm:mt-32">
+        <div className="grid gap-10 lg:grid-cols-[.75fr_1.25fr] lg:items-end"><PageHeading eyebrow="A BETTER WAY TO PREPARE" title="Make the big goal manageable." description="PrepTrack brings your syllabus and your progress into one clear, uncluttered space—so you always know what to do next."/><p className="max-w-md pb-8 text-sm leading-6 text-zinc-500">No complicated setup. Pick an exam, open a topic, and keep moving at a pace that works for you.</p></div>
+        <div className="grid gap-3 md:grid-cols-3">
+          {[{ icon: BookOpen, n: "01", title: "Know what’s ahead", body: "Browse your exam syllabus in a clear subject-by-subject view. Understand the full path before you begin." }, { icon: Target, n: "02", title: "Focus on one topic", body: "Mark topics as learning, revising, or done. Small, visible steps make it easier to keep your focus." }, { icon: TrendingUp, n: "03", title: "See your progress", body: "Your personal profile gives you a quick picture of every exam you’re working toward." }].map(({ icon: Icon, n, title, body }) => <article key={n} className="panel group rounded-2xl p-6 transition hover:-translate-y-1 hover:border-indigo-300/20 sm:p-7"><div className="flex items-center justify-between"><span className="grid h-11 w-11 place-items-center rounded-xl bg-indigo-400/10 text-indigo-200 transition group-hover:bg-indigo-400/15"><Icon size={19}/></span><span className="text-xs tracking-[.16em] text-zinc-700">{n}</span></div><h3 className="mt-7 text-lg font-semibold text-white">{title}</h3><p className="mt-3 text-sm leading-6 text-zinc-500">{body}</p></article>)}
+        </div>
+      </section>
+
+      <section className="mt-24 overflow-hidden rounded-[2rem] border border-white/[0.08] bg-gradient-to-br from-indigo-500/[0.09] via-zinc-900/80 to-zinc-900 p-6 sm:mt-32 sm:p-10 lg:p-12">
+        <div className="grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-center"><div><p className="mb-3 text-xs font-semibold uppercase tracking-[.2em] text-indigo-300">YOUR MOMENTUM, MADE VISIBLE</p><h2 className="max-w-lg text-3xl font-semibold tracking-tight text-white sm:text-4xl">A little progress, repeated, becomes a lot.</h2><p className="mt-4 max-w-lg text-sm leading-6 text-zinc-400">Let your progress reflect the work you’re putting in. Track each subject as you move from first look to final review.</p><Link href={user ? "/profile" : "/exams"} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-indigo-200 hover:text-white">{user ? "View your profile" : "Find your exam"}<ArrowRight size={15}/></Link></div>
+          <div className="rounded-2xl border border-white/10 bg-zinc-950/70 p-5 shadow-2xl sm:p-6"><div className="flex items-center justify-between"><div><p className="text-xs text-zinc-500">YOUR LEARNING PATH</p><p className="mt-1 text-sm font-semibold text-white">Steady progress, stronger confidence.</p></div><span className="grid h-10 w-10 place-items-center rounded-xl bg-indigo-400/10 text-indigo-200"><TrendingUp size={18}/></span></div><div className="mt-7 space-y-4">{[["Done", "w-[68%]", "bg-emerald-300"], ["Learning", "w-[19%]", "bg-sky-300"], ["Revising", "w-[13%]", "bg-amber-200"]].map(([label, width, color]) => <div key={label}><div className="mb-2 flex justify-between text-xs"><span className="text-zinc-400">{label}</span><span className="text-zinc-600">{width === "w-[68%]" ? "68%" : width === "w-[19%]" ? "19%" : "13%"}</span></div><div className="h-2 overflow-hidden rounded-full bg-white/[0.07]"><div className={`h-full rounded-full ${width} ${color}`}/></div></div>)}</div><div className="mt-6 flex items-center justify-between border-t border-white/[0.07] pt-4"><span className="text-xs text-zinc-500">All topics add up to progress.</span><span className="text-lg font-semibold text-white">100<span className="text-xs text-zinc-500">%</span></span></div></div>
+        </div>
+      </section>
+
+      <section className="mt-24 sm:mt-32">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4"><PageHeading eyebrow="START WHERE YOU ARE" title="Explore available exams" description="Take a look around. Syllabi are open to everyone."/><Link href="/exams" className="mb-8 inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:bg-white/[0.06]">All exams <ArrowRight size={15}/></Link></div>
+        {exams.isLoading && <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[1,2,3].map((n) => <LoadingCard key={n} label="Loading exam"/>)}</div>}
+        {exams.isError && <ErrorNotice message={exams.error.message}/>}
+        {exams.data?.length === 0 && <div className="panel rounded-2xl p-8 text-center"><BookOpen className="mx-auto mb-3 text-zinc-500"/><h3 className="font-medium text-zinc-200">No exams available yet</h3><p className="mt-2 text-sm text-zinc-500">Check back when an administrator adds a syllabus.</p></div>}
+        {!!previewExams.length && <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{previewExams.map((exam, index) => <Link key={exam.id} href={`/exams/${exam.id}`} className="group panel rounded-2xl p-5 transition duration-200 hover:-translate-y-1 hover:border-indigo-300/30 hover:bg-zinc-900"><div className="mb-5 flex items-center justify-between"><span className="grid h-10 w-10 place-items-center rounded-xl bg-indigo-400/10 text-indigo-200"><BookOpen size={18}/></span><span className="text-xs text-zinc-600">{String(index + 1).padStart(2,"0")}</span></div><h3 className="text-lg font-semibold text-white">{exam.name}</h3><p className="mt-2 line-clamp-2 min-h-10 text-sm leading-5 text-zinc-400">{exam.description || "Explore the syllabus and map your preparation."}</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-indigo-200">View syllabus <ArrowRight size={15} className="transition group-hover:translate-x-1"/></span></Link>)}</div>}
+      </section>
+
+      <section className="mt-24 rounded-[2rem] border border-indigo-300/15 bg-indigo-300/[0.06] px-6 py-10 text-center sm:mt-32 sm:px-10 sm:py-14"><p className="text-xs font-semibold uppercase tracking-[.2em] text-indigo-300">YOUR NEXT STEP STARTS HERE</p><h2 className="mx-auto mt-4 max-w-2xl text-3xl font-semibold tracking-tight text-white sm:text-4xl">Show up for the goal you care about.</h2><p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-zinc-400">Choose your exam, find your first topic, and start building the rhythm that gets you there.</p><div className="mt-7 flex flex-wrap justify-center gap-3"><Link href="/exams" className="inline-flex items-center gap-2 rounded-xl bg-indigo-300 px-5 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-indigo-200">Browse exams <ArrowRight size={15}/></Link>{!user && ready && <div id="footer-sign-in"><GoogleSignInButton/></div>}</div></section>
+      <footer className="mt-16 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 py-6 text-xs text-zinc-600"><span>PrepTrack · One topic at a time.</span><div className="flex gap-4"><Link href="/exams" className="hover:text-zinc-300">Exams</Link><Link href="/#sign-in" className="hover:text-zinc-300">Sign in</Link></div></footer>
+    </PageShell>
+  </div>;
 }
