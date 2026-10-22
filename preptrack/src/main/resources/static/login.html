@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PrepTrack: Google login test</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body style="font-family: sans-serif; max-width: 600px; margin: 40px auto;">
+<h2>PrepTrack: Google login test</h2>
+
+<div id="g_id_onload"
+     data-client_id="627162793592-7u6k0vcgi86hh012nmhpqt9fl258bium.apps.googleusercontent.com"
+     data-callback="onGoogleLogin"
+     data-auto_prompt="false"></div>
+<div class="g_id_signin" data-type="standard"></div>
+
+<p>
+    <button onclick="whoAmI()">Who am I? (GET /api/me)</button>
+    <button onclick="logout()">Log out</button>
+</p>
+
+<img id="avatar" width="64" height="64" referrerpolicy="no-referrer"
+     style="display:none; border-radius:50%;">
+<pre id="output">Not signed in</pre>
+
+<script>
+    // Google calls this after the user signs in. We send the token to our backend.
+    async function onGoogleLogin(response) {
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken: response.credential })
+      });
+      show(await res.json());
+    }
+
+    async function whoAmI() {
+      const res = await fetch('/api/me');
+      show(res.ok ? await res.json() : 'Not signed in (' + res.status + ')');
+    }
+
+    async function logout() {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      show('Logged out');
+    }
+
+    function show(data) {
+      document.getElementById('output').textContent =
+        typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+
+      const avatar = document.getElementById('avatar');
+      if (data && data.pictureUrl) {
+        avatar.src = data.pictureUrl;
+        avatar.style.display = 'block';
+      } else {
+        avatar.style.display = 'none';
+      }
+    }
+</script>
+</body>
+</html>
